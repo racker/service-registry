@@ -1,0 +1,10 @@
+static/version
+*.log
+*.swp
+fixtures/
+docs/generated/
+docs/target/
+docs/src/
+docs/markdown/
+tests/local/
+scripts/schema/*combined.cql

@@ -1,0 +1,10 @@
+* { margin:0; padding:0;}
+html { background:#fff;}
+body { padding:40px; background:#fff; font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;  }
+#maint { width:700px; margin:0 auto; text-align:center; padding:150px 0 0 0; background:url(./images/logo.png) top center no-repeat; }
+h1 { font-size:36px; color:#ff9c52; }
+#blockish {text-align: left; padding-left: 100px;}
+ul { padding-left: 50px;}
+h2 { font-size:24px; color:#6dafb5; padding-top:10px; margin-bottom: 10px;}
+h3 { font-size:18px; color:#aaa; padding-top:13px;}
+a { color:inherit; }

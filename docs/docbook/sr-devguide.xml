@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE book[<!-- Some useful entities borrowed from HTML -->
+  <!ENTITY ndash  "&#x2013;">
+  <!ENTITY mdash  "&#x2014;">
+  <!ENTITY hellip "&#x2026;">
+]>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:html="http://www.w3.org/1999/xhtml" version="5.0" xml:id="monitoring-developer-guide">
+  <?rax  pdf.url="../../sr-devguide.pdf" status.bar.text="PREVIEW" canonical.url.base="http://docs.rackspace.com/sr/api/v1.0/sr-devguide/content"?> 
+  <title>Rackspace Service Registry Developer Guide</title>
+  <info>
+  <author>
+    <personname>
+    <firstname/>
+    <surname/>
+    </personname>
+    <affiliation>
+        <orgname>Rackspace Cloud</orgname>
+      </affiliation>
+  </author>
+  <copyright>
+    <year>2012</year>
+    <holder>Rackspace US, Inc.</holder>
+  </copyright>
+  <releaseinfo>API v1.0</releaseinfo>
+  <productname>Rackspace Service Registry</productname>
+  <pubdate>2012-11-05</pubdate>
+    <legalnotice role="rs-api">
+      <annotation>
+        <remark>Copyright details are filled in by the template.</remark>
+      </annotation>
+    </legalnotice>
+  <abstract>
+    <para>This document is intended for software developers interested in developing applications
+      using the Rackspace Service Registry Application Programming Interface (<abbrev>API</abbrev>).
+    </para>
+    <para>Your use of any API you download from the Rackspace website, as well as the code
+    examples contained within the documentation, are governed by the license terms included
+    with the code in the file named “README”, “COPYING” or “LICENSE” or like caption.
+    </para>
+  </abstract>
+  <!-- Please generate the following when you create sr-devguide.xml:-->
+  <raxm:metadata role="hidden" xmlns:raxm="http://docs.rackspace.com/api/metadata">
+    <raxm:displayname>API Developer Guide</raxm:displayname>
+    <raxm:product version="v1.0">rsr</raxm:product>
+    <raxm:priority>20</raxm:priority>
+  </raxm:metadata>
+</info>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Overview.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Getting-Started.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Concepts.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="General-API-Information.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Service-API-Operations.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Client-Libraries-and-Tools.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Integration-Instructions.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Other.xml"/>
+  <include xmlns="http://www.w3.org/2001/XInclude" href="Release-Notes.xml"/>
+</book>

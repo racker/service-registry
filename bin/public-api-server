@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+/**
+ *  Copyright 2013 Rackspace
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
+var async = require('async');
+var logmagic = require('logmagic');
+var optimist = require('optimist');
+
+var PublicAPIServer = require('../lib/public_api/server').PublicAPIServer;
+var settings = require('../lib/util/settings');
+
+var argv = optimist
+  .usage('Usage: $0 -h [host] -p [port] -l [log level] -c [config file]')
+  .alias('h', 'host')
+  .alias('p', 'port')
+  .alias('l', 'loglevel')
+  .alias('c', 'config')
+  .default('h', settings.PUBLIC_API_HOST)
+  .default('p', settings.PUBLIC_API_PORT)
+  .default('l', 'DEBUG')
+  .argv;
+
+var server = new PublicAPIServer({'host': argv.h, 'port': argv.p});
+server.run();

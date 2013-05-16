@@ -1,0 +1,40 @@
+!!!5
+html(lang="en")
+  head
+    - if (typeof title !== 'undefined')
+      title #{title} | Service Registry Dash
+    - else
+      title Service Registry Dash
+
+    link(rel='stylesheet', href='/_dashboard/static/bootstrap/css/bootstrap.min.css', type='text/css', media='screen, projection')
+    block stylesheets
+
+  body
+    div.navbar(class='navbar-inverse')
+      div.navbar-inner
+        div.container
+          a(href='/_dashboard/').brand Service Registry
+          ul.nav
+            li
+              a(href='/_dashboard/') Overview
+            li.dropdown
+              a(href='#', data-toggle='dropdown').dropdown-toggle Accounts
+                b.caret
+              ul(role='menu').dropdown-menu
+                li
+                  a(href='/_dashboard/accounts/list') List
+                li
+                  a(href='/_dashboard/accounts/lookup') Lookup
+            li.dropdown
+              a(href='#', data-toggle='dropdown').dropdown-toggle Other
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(href='/_dashboard/zk') Zookeeper
+
+    div(class='container')
+      block content
+    script(src='/_dashboard/static/js/jquery-1.9.1.min.js')
+    script(src='/_dashboard/static/bootstrap/js/bootstrap.min.js')
+    block scripts
+

@@ -1,0 +1,62 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 9000,
+    "secure": false
+  },
+
+  "admin_api": {
+    "host": "localhost",
+    "port": 8001,
+    "secure": false,
+    "key": "abcd"
+  },
+
+  "target": {
+    "host": "localhost",
+    "port": 8080,
+    "secure": false,
+    "middleware_run_list": {
+      "request": ["identity_provider", "rate_limiting", "authentication"],
+      "response": ["rate_limiting", "header_remover"]
+    }
+  },
+
+  "database": {
+    "backend": "redis",
+    "settings": {
+      "host": "localhost",
+      "port": 6379,
+      "password": null
+    }
+  },
+
+  "middleware": {
+    "identity_provider": {},
+     "rate_limiting": {
+        "bucket_size": 3600,
+        "limits": [
+          {
+            "method": "GET",
+            "path_regex": "/.*",
+            "limit": 500000,
+            "period": 86400
+          },
+          {
+            "method": "GET",
+            "path_regex": "/test/.*",
+            "limit": 300000,
+            "period": 86400
+          }
+        ],
+        "usage_proxy_path": "/limits",
+        "usage_target_path": "/rate_limits"
+    },
+    "authentication": {
+      "urls": ["http://127.0.0.1:23542/v2.0"]
+    },
+    "header_remover": {
+      "prefixes": ["x-rp", "x-test"]
+    }
+  }
+}

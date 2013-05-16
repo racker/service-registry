@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>com.rackspace.cloud.api</groupId>
+  <artifactId>service-registry</artifactId>
+  <version>1.1.2-SNAPSHOT</version>
+  <name>Rackspace Service Registry Docs</name>
+  <packaging>jar</packaging>  
+  <build>
+    <plugins>
+      <plugin>
+  <groupId>com.rackspace.cloud.api</groupId>
+  <artifactId>clouddocs-maven-plugin</artifactId>
+  <version>1.8.1-SNAPSHOT</version>
+  <executions>
+    <execution>
+      <id>main</id>
+      <goals>
+        <goal>generate-webhelp</goal>
+      </goals>
+      <phase>generate-sources</phase>
+      <configuration>
+        <includes>sr-devguide.xml</includes>
+        <sourceDirectory>.</sourceDirectory>
+      </configuration>
+    </execution>
+    <execution>
+      <configuration>
+        <showXslMessages>true</showXslMessages>
+        <branding>rackspace</branding>
+        <enableGoogleAnalytics>1</enableGoogleAnalytics>
+        <socialIcons>1</socialIcons>
+        <enableDisqus>1</enableDisqus>
+      </configuration>
+    </execution>
+  </executions>
+      </plugin>
+      <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-assembly-plugin</artifactId>
+  <version>2.3</version>
+  <configuration>
+    <descriptors>
+      <descriptor>includewars.xml</descriptor>
+    </descriptors>
+  </configuration>
+  <executions>
+    <execution>
+      <id>assembly</id>
+      <goals>
+        <goal>single</goal>
+      </goals>
+      <phase>package</phase>
+    </execution>
+  </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>rackspace-research</id>
+      <name>Rackspace Research Repository</name>
+      <url>http://maven.research.rackspacecloud.com/content/groups/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
+</project>

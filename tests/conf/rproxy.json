@@ -1,0 +1,59 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 9000,
+    "secure": false,
+    "workers": 1
+  },
+
+  "admin_api": {
+    "host": "localhost",
+    "port": 9100,
+    "secure": false,
+    "key": "abcd"
+  },
+
+  "target": {
+    "host": "localhost",
+    "port": 9001,
+    "secure": false,
+    "middleware_run_list": {
+      "request": ["identity_provider", "rate_limiting", "authentication"],
+      "response": ["rate_limiting", "header_remover"]
+    }
+  },
+
+  "database": {
+    "backend": "cassandra",
+    "settings": {
+      "hosts": ["127.0.0.1:9160"],
+      "keyspace": "rproxy",
+      "read_consistency": "ONE",
+      "write_consistency": "ONE"
+    }
+  },
+
+  "middleware": {
+    "identity_provider": {},
+    "rate_limiting": {
+        "bucket_size": 100,
+        "limits": [
+          {
+            "method": "GET",
+            "path_regex": "/.*",
+            "limit": 500000,
+            "period": 86400
+          }
+        ],
+        "usage_proxy_path": "(.*?)/limits",
+        "usage_target_path": "${1}/limits"
+    },
+    "authentication": {
+      "urls": ["http://127.0.0.1:23542/v2.0"],
+      "whitelist": ["/"]
+    },
+    "header_remover": {
+      "prefixes": ["x-rp"]
+    }
+  }
+}

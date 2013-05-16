@@ -1,0 +1,44 @@
+{
+  "cassandra": {
+    "cmd": ["dev-bin/cassandra.sh"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-cassandra.log",
+    "wait_for": "socket",
+    "wait_for_options": {
+      "host": "127.0.0.1",
+      "port": 9160
+    },
+    "timeout": 15000
+  },
+
+  "create_schema": {
+    "cmd": ["scripts/create-schema.sh"],
+    "cwd": ["__dirname", ".."],
+    "depends": ["cassandra"],
+    "log_file": "test-create-schema.log",
+    "wait_for": "stdout",
+    "wait_for_options": {
+      "string": "Done"
+    }
+  },
+
+  "mock_auth_api": {
+    "cmd": ["dev-bin/mock-auth-api-server"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-mock-auth-api-server.log"
+  },
+
+  "proxy_server": {
+    "cmd": ["bin/server", "-c", "tests/conf/proxy-cassandra.json"],
+    "cwd": ["__dirname", ".."],
+    "depends": ["cassandra", "create_schema"],
+    "log_file": "test-proxy.log",
+    "wait_for": "socket",
+    "wait_for_options": {
+      "host": "127.0.0.1",
+      "port": 9000
+    },
+    "timeout": 10000,
+    "kill_script": "tests/kill_proxy.sh"
+  }
+}

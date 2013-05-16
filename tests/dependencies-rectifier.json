@@ -1,0 +1,13 @@
+{
+  "rectifier": {
+    "cmd": ["node", "bin/rectifier", "-l", "DEBUG", "--config", "tests/conf/api-server.js"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-rectifier.log",
+    "depends": ["cassandra", "create_schema"],
+    "wait_for": "stdout",
+    "wait_for_options": {
+      "string": "Rectifier Started"
+    },
+    "timeout": 5000
+  }
+}

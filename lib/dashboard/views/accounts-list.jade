@@ -1,0 +1,10 @@
+extends layout
+
+block scripts
+
+block content
+  h1 All Accounts
+  div
+    - each acct in acctArr
+      a(href='/_dashboard/accounts/lookup/#{acct.key}') #{acct.key}
+      br

@@ -1,0 +1,172 @@
+#!/usr/bin/env node
+/**
+ *  Copyright 2013 Rackspace
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+var path = require('path');
+
+var async = require('async');
+var logmagic = require('logmagic');
+var sprintf = require('sprintf').sprintf;
+var BatchInsert = require('cassandra-orm/lib/orm/batch_insert').BatchInsert;
+
+var apiInit = require('../lib/init').initialize;
+var account = require('../lib/db/ops/account');
+var session = require('../lib/db/ops/session');
+var service = require('../lib/db/ops/service');
+var settings = require('../lib/util/settings');
+
+var argv = require('optimist')
+  .usage('Usage: $0 -n [concurrency] -l [limit] -r')
+  .alias('n', 'concurrency')
+  .default('n', 10)
+  .boolean('r')
+  .alias('r', 'remove')
+  .default('r', false)
+  .alias('l', 'limit')
+  .default('l', 10)
+  .describe('limit', 'limits the amount of services that are removed to a maximum value.  ')
+  .argv;
+
+// suppress all logmagic logging.
+function nullLogger() {};
+logmagic.registerSink('null', nullLogger);
+logmagic.route('__root__', logmagic.DEBUG, 'null');
+
+function fauxContext(account) {
+  return {
+    account: account
+  };
+}
+
+// callback(err, [{acct:Account, orphans:[Service]]
+function findOrphansInAccounts(acctObjects, callback) {
+  var accounts = [];
+  async.forEachLimit(acctObjects, parseInt(argv.concurrency, 10), function(acct, callback) {
+    var orphans = [];
+    async.waterfall([
+
+      function getSessionsAndServices(callback) {
+        async.parallel([
+          session.getAll.bind(null, fauxContext(acct), {}),
+          service.getAll.bind(null, fauxContext(acct), {})
+        ], callback);
+      },
+
+      function separateResults(res, callback) {
+        // extract out the session ids from the session objects, and {key, session_id} from the service objects.
+        var sessionIds = res[0][0].map(function(obj) { return obj.key }),
+            services = res[1][0];
+        callback(null, sessionIds, services);
+      },
+
+      function findOrphanedServices(sessionIdsArr, serviceObjArr, callback) {
+        serviceObjArr.forEach(function(svc) {
+          if (sessionIdsArr.indexOf(svc.session_id) < 0) {
+            orphans.push(svc);
+          }
+        });
+        accounts.push({
+          acct: acct,
+          orphans: orphans
+        });
+        callback(null);
+      }
+
+    ], callback)
+  },
+  function(err) {
+    callback(err, accounts);
+  });
+}
+
+function discardAccountsWithNoOrphans(accountsArr, callback) {
+  var numWithNoOrphans = 0,
+      numWithOrphans = 0,
+      accountsToProcess = [];
+  accountsArr.forEach(function(acct) {
+    // acct.orphans and acct.acctId
+    if (acct.orphans.length === 0) {
+      numWithNoOrphans += 1;
+    } else {
+      console.log(sprintf('%s: %s', acct.acct.getKey(), acct.orphans.map(function(svc) {return svc.key;}).join(',')));
+      numWithOrphans += 1;
+      accountsToProcess.push(acct);
+    }
+  });
+  console.log(sprintf('%s of %s accounts had orphans', numWithOrphans, numWithOrphans + numWithNoOrphans));
+  callback(null, accountsToProcess);
+}
+
+// callback(err, serviceArray)
+function flattenServices(accountsArr, callback) {
+  var services = [];
+  accountsArr.forEach(function(acct) {
+    acct.orphans.forEach(function(orphan) {
+      services.push({
+        acct: acct,
+        orphan: orphan
+      });
+    });
+  });
+  callback(null, services);
+}
+
+function removeServices(services, callback) {
+  var numRemoved = 0,
+      numCouldHaveRemoved = 0;
+  async.forEach(services, function(obj, callback) {
+    numCouldHaveRemoved += 1;
+    if (numRemoved < argv.limit) {
+      console.log('removing ' + obj.service.getKey());
+      service.hardRemove(fauxContext(obj.acct), obj.service, function(err) {
+        numRemoved += 1;
+        callback(err);
+      });
+    } else {
+      callback(null);
+    }
+  },
+  function(err) {
+    console.log(sprintf('Removed %s of %s services', numRemoved, numCouldHaveRemoved));
+    callback(err);
+  });
+}
+
+function main() {
+  var ops = [
+    apiInit,
+    account.getAll.bind(null, {}),
+    findOrphansInAccounts,
+    discardAccountsWithNoOrphans
+  ];
+  
+  if (argv.r) {
+    ops.push(flattenServices)
+    ops.push(removeServices);
+  }
+  
+  async.waterfall(ops, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Finished');
+    }
+    process.exit(0);
+  });
+}
+
+main();

@@ -1,0 +1,85 @@
+{
+  "name": "service-registry-server",
+  "description": "API-driven cloud service built for keeping track of your services and storing configuration values in a centralized place.",
+  "version": "0.1.0",
+  "author": "Rackspace Hosting <sr@rackspace.com>",
+  "contributors": [
+      {
+        "name": "Shawn Smith",
+        "email": "shawn.smith@rackspace.com",
+        "url": "http://shawnps.net"
+      },
+      {
+        "name": "Tomaz Muraus",
+        "email": "tomaz@tomaz.me",
+        "url": "http://www.tomaz.me"
+      },
+      {
+        "name": "Gary Dusbabek",
+        "email": "gdusbabek@gmail.com",
+        "url": "http://www.onemanclapping.org"
+      }
+  ],
+  "keywords": [
+    "service registry",
+    "service discovery",
+    "configuration storage",
+    "configuration management",
+    "dynamic configuration",
+    "registry"
+  ],
+  "homepage": "https://github.com/racker/service-registry",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/racker/service-registry.git"
+  },
+  "bin": {
+    "public-api-server": "./bin/public-api-server",
+    "rectifier-service": "./bin/rectifier"
+  },
+  "dependencies": {
+    "async": "0.1.22",
+    "cassandra-client": "git+https://github.com/racker/node-cassandra-client.git",
+    "zookeeper-client": "0.1.0",
+    "express": "3.0.5",
+    "jade": "0.28.1",
+    "logmagic": "0.1.4",
+    "node-uuid": "1.3.3",
+    "swiz": "0.4.52",
+    "sprintf": "0.1.1",
+    "optimist": "0.3.4",
+    "rackspace-shared-utils": ">= 0.1.20",
+    "rackspace-shared-middleware": "0.1.12",
+    "underscore": "1.4.2",
+    "service-registry-client": "git+https://github.com/racker/node-service-registry-client.git",
+    "rproxy": "git+https://github.com/racker/node-rproxy.git",
+    "tryfer": "git+https://github.com/racker/node-tryfer.git"
+  },
+  "devDependencies": {
+    "whiskey": "git+https://github.com/cloudkick/whiskey.git#consistent_setup_and_teardown_behavior",
+    "jshint": "0.7.1",
+    "node-dev": "0.2.2",
+    "elementtree": "> 0.1.1",
+    "rproxy": "git+https://github.com/racker/node-rproxy.git",
+    "markdown-to-docbook": "git+https://github.com/Kami/node-markdown-to-docbook.git"
+  },
+  "scripts": {
+    "unit-tests": "./scripts/tests.sh unit",
+    "client-tests": "./scripts/tests.sh client",
+    "client-tests-no-rectifier": "WITH_RECTIFIER=no ./scripts/tests.sh client",
+    "internal-tests": "./scripts/tests.sh internal",
+    "test": "./scripts/tests.sh all",
+    "lint": "./scripts/lint.sh",
+    "run-dev": "./scripts/run-dev.sh",
+    "write-version": "./scripts/write-version.sh"
+  },
+  "engines": {
+      "node": ">= 0.8.0 && < 0.9.0"
+  },
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ]
+}

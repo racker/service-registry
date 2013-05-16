@@ -1,0 +1,12 @@
+extends layout
+
+block scripts
+
+block content
+  div
+    form(name='acctLookup', action='/_dashboard/accounts/lookup', method='GET', )
+      fieldset
+        legend Lookup Account
+        label Account Id
+        input(type='text', placeholder='acXXXXXXXX', id='acctId', name='acctId')
+        button(type='submit', class='btn') Submit

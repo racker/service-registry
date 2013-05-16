@@ -1,0 +1,101 @@
+extends layout
+
+block scripts
+  script(src='/_dashboard/static/js/jquery.timeago.js')
+  script(src='/_dashboard/static/js/accounts-lookup.js')
+
+block content
+  h1.hide(id='account', key='#{acct.getKey()}')
+  h1 Account Overview: #{acct.getKey()}
+  div.container
+    table(class='table table-bordered table-condensed')
+      tr
+        td Status
+        td #{acct.status}
+      tr
+        td Created
+        td
+          abbr(class='timeago', title='#{new Date(acct.created_at).toISOString()}')
+      tr
+        td Service Limit
+        td #{acct.limits.service}
+      tr
+        td Configuration Limit
+        td #{acct.limits.configuration_value}
+
+  h1 Services
+    button.btn(class='btn-primary', id='service_prev_btn', onclick='prevServices();') &lt;&lt;
+    button.btn(class='btn-primary', id='service_next_btn', onclick='nextServices();') &gt;&gt;
+  div.container(id='service_container')
+    span.hide(id='service_markers', stack='START,#{nextService}')
+    table(class='table table-bordered table-condensed')
+      thead
+        tr
+          th Service Id
+          th Heartbeat Timeout
+          th Last Seen
+      tbody(id='service_table')
+        - each service in services
+          tr
+            td
+              a(href='##{service.getKey()}', data-toggle='modal') #{service.getKey()}
+            td #{service.heartbeat_timeout}
+            td
+              abbr(class='timeago', title='#{new Date(service.last_seen).toISOString()}')
+
+  h1 Configuration Values
+    button.btn(class='btn-primary', id='configuration_prev_btn', onclick='prevConfigurations();') &lt;&lt;
+    button.btn(class='btn-primary', id='configuration_next_btn', onclick='nextConfigurations();') &gt;&gt;
+  div.container(id='configuration_container')
+    span.hide(id='configuration_markers', stack='START,#{nextConfiguration}')
+    table(class='table table-bordered table-condensed')
+      thead
+        tr
+          th Key
+          th Value
+          th Created At
+      tbody(id='configuration_table')
+        - each config in configuration
+          tr
+            td #{config.getKey()}
+            td #{config.value}
+            td
+              abbr(class='timeago', title='#{new Date(config.created_at).toISOString()}')
+
+  // now build all the hidden divs that will become modals.
+  div(id='service_modals')
+    - each service in services
+      div(id='#{service.getKey()}', class='modal hide fade', tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+        div.modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') x
+          h3 Service #{service.getKey()}
+        div.modal-body
+          table(class='table table-bordered table-condensed')
+            tr
+              td Heartbeat Timeout (sec)
+              td #{service.heartbeat_timeout}
+            tr
+              td Last Seen
+              td
+                abbr(class='timeago', title='#{new Date(service.last_seen).toISOString()}')
+          div.accordion(id='meta_#{service.getKey()}')
+            div.accordion-group
+              div.accordion-headding
+                a.accordion-toggle(data-toggle='collapse', data-parent='meta_#{service.getKey()}', href='#collapse_meta_#{service.getKey()}') Metadata
+              div(class='accordion-body collapse in', id='collapse_meta_#{service.getKey()}')
+                div.accordion-inner
+                  table(class='table table-bordered table-condensed')
+                    - each value, key in service.metadata
+                      tr
+                        td #{key}
+                        td #{value}
+          div.accordion(id='tags_#{service.getKey()}')
+            div.accordion-group
+              div.accordion-heading
+                a.accordion-toggle(data-toggle='collapse', data-parent='tags_#{service.getKey()}', href='#collapse_tags_#{service.getKey()}') Tags
+              div(class='accordion-body collapse in', id='collapse_tags_#{service.getKey()}')
+                div.accordion-inner
+                  table(class='table table-bordered table-condensed')
+                    - each tag in service.tags
+                      tr
+                        td #{tag}

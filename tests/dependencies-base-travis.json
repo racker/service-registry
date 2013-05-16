@@ -1,0 +1,55 @@
+{
+  "zookeeper": {
+    "cmd": ["dev-bin/zk-server", "tests/conf/zookeeper"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-zookeeper.log",
+    "wait_for": "socket",
+    "wait_for_options": {
+      "host": "127.0.0.1",
+      "port": 22181
+    },
+    "timeout": 20000
+  },
+
+  "rproxy": {
+    "cmd": ["node_modules/rproxy/bin/server", "--config", "tests/conf/rproxy.json"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-rproxy-server.log",
+    "depends": ["cassandra", "create_schema"],
+    "wait_for": "socket",
+    "wait_for_options": {
+      "host": "127.0.0.1",
+      "port": 9000
+    }
+  },
+
+  "public_api": {
+    "cmd": ["node", "bin/public-api-server", "-p", "9001", "-l", "DEBUG", "--config", "tests/conf/api-server.js"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-public-api-server.log",
+    "depends": ["cassandra", "zookeeper", "rproxy", "create_schema"],
+    "wait_for": "socket",
+    "wait_for_options": {
+      "host": "127.0.0.1",
+      "port": 9001
+    }
+  },
+
+  "create_schema": {
+    "cmd": ["scripts/create-schema.sh"],
+    "cwd": ["__dirname", ".."],
+    "depends": ["cassandra"],
+    "log_file": "test-create-schema.log",
+    "wait_for": "stdout",
+    "wait_for_options": {
+      "string": "Done"
+    },
+    "timeout": 35000
+  },
+
+  "mock_auth_api": {
+    "cmd": ["dev-bin/mock-auth-api-server"],
+    "cwd": ["__dirname", ".."],
+    "log_file": "test-mock-auth-api-server.log"
+  }
+}

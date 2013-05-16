@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+/**
+ *  Copyright 2013 Rackspace
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+var fs = require('fs');
+var querystring = require('querystring');
+
+var sprintf = require('sprintf').sprintf;
+var request = require('rackspace-shared-utils/lib/request').request;
+var optimist = require('optimist');
+var argv = require('optimist')
+  .usage('Usage: $0 --id=<tenant id>')
+  .describe('id', 'Account tenant ID without ac prefix (e.g. 54321)')
+  .demand(['id'])
+  .argv;
+
+function main() {
+  var url, options, qs, config;
+
+  config = fs.readFileSync('/opt/farscape-conf/rproxy_public_api.json');
+  config = JSON.parse(config);
+
+  qs = {'userId': argv.id};
+  qs = querystring.stringify(qs);
+  url = sprintf('http://%s:%s/v1.0/usage?%s', config.admin_api.host,
+                                          config.admin_api.port, qs);
+  options = {'expected_status_codes': [200], 'parse_json': true,
+             'headers': {'x-api-key': config.admin_api.key}};
+  request(url, 'GET', null, options, function(err, res) {
+    var data;
+
+    if (err) {
+      console.log('Failed to retrieve usage / limits: ' + err.toString());
+      process.exit(1);
+    }
+
+    data = res.body;
+    data.forEach(function(item) {
+      console.log('Method | Path Regex | Limit | Used | Period')
+      console.log([item.method, item.path_regex, item.limit, item.used,
+                   item.period].join(' | '));
+    });
+  });
+}
+
+main();

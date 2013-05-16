@@ -1,0 +1,58 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 9000,
+    "secure": false,
+    "workers": 1
+  },
+
+  "admin_api": {
+    "host": "localhost",
+    "port": 8001,
+    "secure": false,
+    "key": "abcd"
+  },
+
+  "target": {
+    "host": "google.com",
+    "port": 80,
+    "secure": false,
+    "middleware_run_list": {
+      "request": ["identity_provider", "rate_limiting", "authentication"],
+      "response": ["usage", "rate_limiting", "header_remover", "stats"]
+    }
+  },
+
+  "database": {
+    "backend": "redis",
+    "settings": {
+      "host": "localhost",
+      "port": 6379,
+      "password": null
+    }
+  },
+
+  "middleware": {
+    "identity_provider": {},
+     "rate_limiting": {
+        "bucket_size": 4,
+        "limits": [],
+        "usage_proxy_path": "/limits",
+        "usage_target_path": "/rate_limits"
+    },
+    "authentication": {
+      "urls": ["http://127.0.0.1:23542/v2.0"],
+      "whitelist": ["/whitelisted"]
+    },
+    "usage": {
+      "url": "http://127.0.0.1:9002/hopper",
+      "service_name": "maas",
+      "region": "us",
+      "datacenter": "dfw2"
+    },
+    "header_remover": {
+      "prefixes": []
+    },
+    "stats": {}
+  }
+}
