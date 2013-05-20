@@ -31,7 +31,7 @@ else
 fi
 
 if [ ${WITH_RECTIFIER} = "yes" ]; then
-  DEPENDENCIES_FILE="$DEPENDENCIES_FILE,tests/dependencies-rectifier.json"
+  DEPENDENCIES_FILE="$DEPENDENCIES_FILE,tests/dependencies-rectifier-travis.json"
   echo "Running with rectifier service"
 else
   echo "Running without rectifier service"
