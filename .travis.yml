@@ -9,7 +9,7 @@ before_install:
   - sleep 8
 
 script:
-  - rm -rf node_modules/zookeeper-client/node_modules/zookeeper/build && cd node_modules/zookeeper-client/node_modules/zookeeper/ && npm install
+  - rm -rf node_modules/zookeeper-client/node_modules/zookeeper/build && cd node_modules/zookeeper-client/node_modules/zookeeper/ && npm build
   - npm run-script lint
   - npm run-script test
 
