@@ -7,4 +7,5 @@ docs/target/
 docs/src/
 docs/markdown/
 tests/local/
+tests/deps/zookeeper-20120116174103/
 scripts/schema/*combined.cql
