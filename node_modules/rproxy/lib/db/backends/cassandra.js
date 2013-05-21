@@ -78,7 +78,11 @@ CassandraClient.prototype._getClient = function() {
 
   client = new cassandra.PooledConnection(options);
   client.on('log', function(level, message, obj) {
-    if (['error', 'info', 'debug'].indexOf('level') === -1) {
+    if (level === 'cql') {
+      level = 'trace';
+    }
+
+    if (['error', 'info', 'debug', 'trace'].indexOf(level) === -1) {
       level = 'debug';
     }
 

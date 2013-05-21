@@ -24,7 +24,7 @@ var tracers = require('tryfer').tracers;
 var nodeTracers = require('tryfer').node_tracers;
 
 var config = require('../../util/config').config;
-var settings = config.middleware.tracing;
+var settings = config.middleware.tracing || {};
 
 var prefix = settings.service_name_prefix || '';
 var ignoredHeaders = settings.ignored_headers || [];
