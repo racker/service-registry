@@ -20,10 +20,16 @@ export REPLICATION_FACTOR=1
 make -C ./scripts/schema/ clean
 make -C ./scripts/schema/ setup
 
+if [ $TRAVIS ]; then
+  CQLSH="/usr/local/cassandra/bin"
+else
+  CQLSH="cqlsh"
+fi
+
 sleep 0.5
 
-cqlsh 127.0.0.1 9160 < ./scripts/schema/rproxy-combined.cql &
-cqlsh 127.0.0.1 9160 < ./scripts/schema/farscape-combined.cql &
+${CQLSH} 127.0.0.1 9160 < ./scripts/schema/rproxy-combined.cql &
+${CQLSH} 127.0.0.1 9160 < ./scripts/schema/farscape-combined.cql &
 
 wait %1 %2
 
