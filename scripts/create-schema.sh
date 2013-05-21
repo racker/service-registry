@@ -21,7 +21,7 @@ make -C ./scripts/schema/ clean
 make -C ./scripts/schema/ setup
 
 if [ $TRAVIS ]; then
-  CQLSH="/usr/local/cassandra/bin"
+  CQLSH="/usr/local/cassandra/bin/cqlsh"
 else
   CQLSH="cqlsh"
 fi
