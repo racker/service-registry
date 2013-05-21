@@ -21,8 +21,9 @@
 ZOOCFGDIR=$1
 ZOOCFG="$ZOOCFGDIR/zoo.cfg"
 ZOOKEEPER_VERSION="3.4.5"
+USE_BUNDLED_ZK=$TRAVIS
 
-if [ $TRAVIS ]; then
+if [ $USE_BUNDLED_ZK ]; then
   ZOODIR="tests/deps/zookeeper-20120116174103"
   JVMFLAGS="-XX:MaxPermSize=256M -Xms128M -Xmx256M"
 
