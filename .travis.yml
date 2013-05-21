@@ -10,7 +10,9 @@ before_install:
   - sleep 5
 
 script:
+  - rm -rf node_modules/zookeeper-client/node_modules/zookeeper/build && cd node_modules/zookeeper-client/node_modules/zookeeper/ && npm run-script build && cd ../../../../
   - npm run-script lint
+  - npm run-script test
 
 notifications:
   email:
